@@ -4,13 +4,14 @@
 #
 Name     : pypi-macholib
 Version  : 1.16
-Release  : 1
+Release  : 2
 URL      : https://files.pythonhosted.org/packages/16/1b/85fd523a1d5507e9a5b63e25365e0a26410d5b6ee89082426e6ffff30792/macholib-1.16.tar.gz
 Source0  : https://files.pythonhosted.org/packages/16/1b/85fd523a1d5507e9a5b63e25365e0a26410d5b6ee89082426e6ffff30792/macholib-1.16.tar.gz
 Summary  : Mach-O header analysis and editing
 Group    : Development/Tools
 License  : MIT
 Requires: pypi-macholib-bin = %{version}-%{release}
+Requires: pypi-macholib-license = %{version}-%{release}
 Requires: pypi-macholib-python = %{version}-%{release}
 Requires: pypi-macholib-python3 = %{version}-%{release}
 BuildRequires : buildreq-distutils3
@@ -28,9 +29,18 @@ format used by Mac OS X.
 %package bin
 Summary: bin components for the pypi-macholib package.
 Group: Binaries
+Requires: pypi-macholib-license = %{version}-%{release}
 
 %description bin
 bin components for the pypi-macholib package.
+
+
+%package license
+Summary: license components for the pypi-macholib package.
+Group: Default
+
+%description license
+license components for the pypi-macholib package.
 
 
 %package python
@@ -56,13 +66,16 @@ python3 components for the pypi-macholib package.
 %prep
 %setup -q -n macholib-1.16
 cd %{_builddir}/macholib-1.16
+pushd ..
+cp -a macholib-1.16 buildavx2
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1652688121
+export SOURCE_DATE_EPOCH=1653342402
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -74,13 +87,33 @@ export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
+python3 setup.py build
+
+popd
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/pypi-macholib
+cp %{_builddir}/macholib-1.16/LICENSE %{buildroot}/usr/share/package-licenses/pypi-macholib/52ec3df24c20fcd417b4d29819bea85b454ffcf8
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
+python3 -tt setup.py build install --root=%{buildroot}-v3
+popd
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
@@ -90,6 +123,10 @@ echo ----[ mark ]----
 /usr/bin/macho_dump
 /usr/bin/macho_find
 /usr/bin/macho_standalone
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/pypi-macholib/52ec3df24c20fcd417b4d29819bea85b454ffcf8
 
 %files python
 %defattr(-,root,root,-)
