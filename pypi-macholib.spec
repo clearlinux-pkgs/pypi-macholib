@@ -4,7 +4,7 @@
 #
 Name     : pypi-macholib
 Version  : 1.16
-Release  : 2
+Release  : 3
 URL      : https://files.pythonhosted.org/packages/16/1b/85fd523a1d5507e9a5b63e25365e0a26410d5b6ee89082426e6ffff30792/macholib-1.16.tar.gz
 Source0  : https://files.pythonhosted.org/packages/16/1b/85fd523a1d5507e9a5b63e25365e0a26410d5b6ee89082426e6ffff30792/macholib-1.16.tar.gz
 Summary  : Mach-O header analysis and editing
@@ -75,7 +75,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1653342402
+export SOURCE_DATE_EPOCH=1656387642
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -101,6 +101,7 @@ export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/pypi-macholib
 cp %{_builddir}/macholib-1.16/LICENSE %{buildroot}/usr/share/package-licenses/pypi-macholib/52ec3df24c20fcd417b4d29819bea85b454ffcf8
+cp %{_builddir}/macholib-1.16/doc/license.rst %{buildroot}/usr/share/package-licenses/pypi-macholib/f7c8530285650877d9b3d44075329c6dbf5de742
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
@@ -113,7 +114,7 @@ export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
 python3 -tt setup.py build install --root=%{buildroot}-v3
 popd
-/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
@@ -127,6 +128,7 @@ popd
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/pypi-macholib/52ec3df24c20fcd417b4d29819bea85b454ffcf8
+/usr/share/package-licenses/pypi-macholib/f7c8530285650877d9b3d44075329c6dbf5de742
 
 %files python
 %defattr(-,root,root,-)
