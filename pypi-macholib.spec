@@ -4,7 +4,7 @@
 #
 Name     : pypi-macholib
 Version  : 1.16.2
-Release  : 11
+Release  : 12
 URL      : https://files.pythonhosted.org/packages/46/92/bffe4576b383f20995ffb15edccf1c97d2e39f9a8c72136836407f099277/macholib-1.16.2.tar.gz
 Source0  : https://files.pythonhosted.org/packages/46/92/bffe4576b383f20995ffb15edccf1c97d2e39f9a8c72136836407f099277/macholib-1.16.2.tar.gz
 Summary  : Mach-O header analysis and editing
