@@ -1,5 +1,5 @@
 PKG_NAME := pypi-macholib
-URL = https://files.pythonhosted.org/packages/46/92/bffe4576b383f20995ffb15edccf1c97d2e39f9a8c72136836407f099277/macholib-1.16.2.tar.gz
+URL = https://files.pythonhosted.org/packages/95/ee/af1a3842bdd5902ce133bd246eb7ffd4375c38642aeb5dc0ae3a0329dfa2/macholib-1.16.3.tar.gz
 ARCHIVES = 
 
 include ../common/Makefile.common
